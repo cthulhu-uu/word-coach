@@ -1,7 +1,13 @@
 <template>
     <nb-container>
         <nb-content padder>
-            <nb-text class="score-text"> Score: {{score}}</nb-text>
+            <nb-text class="score-text"> Score: 
+                    <nb-text
+                    :style="{
+                     fontSize: 18 + -Math.cos(scoreBounce*Math.PI*2)*4
+                    }">{{score}}</nb-text>
+            </nb-text>
+                
             <nb-card>
                 <nb-card-item class="title-flex">
                     <nb-text class="question-text">Which word is <nb-text class="question-text italic">{{question.type}}</nb-text> to {{question.word}}?</nb-text>
@@ -88,6 +94,8 @@ export default {
         transitionPerc: 0,
         transitioning: false,
         dotGrowth: 0,
+        scoreBounce: 0,
+        scoreBounceTransitioning: false
     },
     computed: {
         question() {
@@ -175,7 +183,7 @@ export default {
         },
         animate(field, transitionTime, steps=16) {
             this[field] = 0;
-            let transField = field + '-transitioning'
+            let transField = field + 'Transitioning'
             this[transField] = true;
 
             for(let i = 0; i < steps; i++) {
