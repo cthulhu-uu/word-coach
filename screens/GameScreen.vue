@@ -1,65 +1,302 @@
 <template>
     <nb-container>
         <nb-content padder>
+            <nb-text class="score-text"> Score: {{score}}</nb-text>
             <nb-card>
+                <nb-card-item class="title-flex">
+                    <nb-text class="question-text">Which word is <nb-text class="question-text italic">{{question.type}}</nb-text> to {{question.word}}?</nb-text>
+                </nb-card-item>
                 <nb-card-item>
-                    <nb-text>Which is similar to Honey Buns?</nb-text>
+                    <nb-button 
+                        :bordered="!answered || !is_chosen(random_choices[0])" 
+                        block 
+                        :success="is_chosen(random_choices[0]) && is_correct(random_choices[0])" 
+                        :danger="is_chosen(random_choices[0]) && !is_correct(random_choices[0])" 
+                        class="button-answer" 
+                        @press="submit(random_choices[0])">
+                        <nb-text>{{ random_choices[0] }}</nb-text> 
+                    </nb-button>
                 </nb-card-item>
-                <nb-card-item button :on-press="correct">
-                    <nb-body>
-                        <nb-text>Cleamy</nb-text>
-                    </nb-body>
+                <!-- <nb-card-item block> -->
+                    <nb-text block class="light-text centered-text">or</nb-text>
+                <!-- </nb-card-item> -->
+                <nb-card-item>
+                    <nb-button 
+                        :bordered="!answered || !is_chosen(random_choices[1])" 
+                        block 
+                        :success="is_chosen(random_choices[1]) && is_correct(random_choices[1])" 
+                        :danger="is_chosen(random_choices[1]) && !is_correct(random_choices[1])" 
+                        class="button-answer" 
+                        @press="submit(random_choices[1])">
+                        <nb-text>{{ random_choices[1] }}</nb-text> 
+                    </nb-button>
                 </nb-card-item>
-                <nb-card-item button :on-press="wrong">
-                    <nb-body>
-                        <nb-text>Selted Egg Chips</nb-text>
-                    </nb-body>
+                <nb-card-item class="progress-container"
+                    :style="{marginTop: dotMarginTop()}"
+                >
+                    <view
+                        :style="{
+                            width: 0,
+                            height: 0,
+                            borderWidth: dotWidth(i),
+                            borderRadius: '50%',
+                            borderColor: dot_color(i),
+                            margin: 4.5,
+                        }"
+                        v-for="i in questions_per_level"
+                        :key="i"
+                    ></view>
                 </nb-card-item>
             </nb-card>
+        <nb-view padder :style="{flexDirection: 'row', justifyContent: 'center'}">
+            <nb-button bordered @press="reset()">
+                <nb-text>Reset</nb-text>
+            </nb-button>
+        </nb-view>
         </nb-content>
-        <!-- <nb-button
-            :on-press="goHome"
-            title="go home 😔"
-        ><nb-text>go home 😔</nb-text>
-        </nb-button>  -->
     </nb-container>
 </template>
 
 <script>
 import React from "react";
-import { Toast } from "native-base";
+import { Toast, Button } from "native-base";
+import { Animated, Easing } from "react-native";
+import c_list from "../assets/questions/store.json";
+import e_list from "../assets/questions/expert-store.json";
+import variables from "../native-base-theme/variables/commonColor";
+
+var q_list = c_list;
+
 export default {
     name: "GameScreen",
     props: {
-    navigation: {
-      type: Object
-    }
-  },
+        navigation: {
+            type: Object
+        },
+    },
+    data: {
+        questions: [...q_list],
+            //{type: "better_image"}
+            //{type: "word_for_image"}
+        question_n: Math.floor(Math.random()*q_list.length),
+        answered_questions: [],
+        score: 0,
+        debug: "",
+        answered: false,
+        chosen: "",
+        questions_per_level: 5,
+        transitionPerc: 0,
+        transitioning: false,
+        dotGrowth: 0,
+    },
+    computed: {
+        question() {
+            return this.questions[this.question_n]
+        },
+        random_choices() {
+            let answers = Object.values(this.question.answers);
+            let i = Math.floor(Math.random() * answers.length);
+            return [answers.splice(i,1)[0], answers[0]];
+        },
+        is_expert_mode() {
+            return this.navigation.getParam('expert');
+        }
+    },
+    created() {
+        if (this.is_expert_mode) {
+            q_list = e_list;
+            this.reset()
+        }
+    },
     methods: {
-        goHome() {
-            this.navigation.navigate("Home");
+        is_chosen(choice) {
+            return this.chosen == choice
         },
-        correct() {
-            // alert('so cleam 🥳');
-            Toast.show({
-                text: "so cleam 🥳",
-                buttonText: "Okay",
-                type: "success"
-            });
+        is_correct(choice) {
+            return choice == this.question.answers.correct;
         },
-        wrong() {
-            // alert('so wrong 💀');
-            Toast.show({
-                text: "so wrong 💀",
-                buttonText: "Awww",
-                type: "danger"
-            });
+        dot_color(i) {
+            if (i == this.answered_questions.length+1 && this.answered) {
+                if (this.is_correct(this.chosen)) {
+                    return variables.brandSuccess;
+                } else {
+                    return variables.brandDanger;
+                }
+            }
+            return '#aaa';
+        },
+        next_question() {
+            // reset state
+            this.chosen = "";
+            this.answered = false;
+            this.transitioning = false;
+            
+            // add current question to answered list
+            this.answered_questions.push(this.question);
+
+            // remove quesiton from question pool
+            this.questions.splice(this.question_n, 1);
+
+            if (this.questions.length <= 1) {
+                this.questions = [...q_list];
+                // this.answered_questions = [];
+            }
+
+            if (this.answered_questions.length >= this.questions_per_level) {
+                this.answered_questions = [];
+            }
+
+            // choose a new question
+            this.question_n = Math.floor(Math.random()*this.questions.length);
+            
+            // success
+            return true;
+        },
+        submit(choice) {
+            if (!this.answered) {
+                this.chosen = choice;
+                if (this.is_correct(choice)) {
+                    this.score += 100;
+                } else if(this.is_expert_mode) {
+                    this.score = 0;
+                }
+                this.answered = true;
+
+                let transitionTime = 1300;
+                this.animate('scoreBounce', transitionTime/5)
+                setTimeout(() => {
+                    this.transitioning = true;
+                    this.animate('dotGrowth', transitionTime/6)
+                }, transitionTime * 5/6);
+                setTimeout(() => {
+                    this.next_question();
+                }, transitionTime);
+            }
+        },
+        animate(field, transitionTime, steps=16) {
+            this[field] = 0;
+            let transField = field + '-transitioning'
+            this[transField] = true;
+
+            for(let i = 0; i < steps; i++) {
+                setTimeout(() => {
+                    this[field] = (i+1)/steps;
+                    if (i + 1 > steps) {
+                        this[transField] = false;
+                    }
+                }, transitionTime/steps * i);
+            }
+
+        },
+        dotWidth(i) {
+            let current = this.answered_questions.length+1;
+            let next = current + 1
+            if (!this.transitioning) {
+                if (i==current) {
+                    return 5
+                }
+            }
+            else {
+                if (i == next) {
+                    return 3+2*this.dotGrowth
+                } else if (i == current) {
+                    return 5-2*this.dotGrowth 
+                }
+            }
+            return 3
+        },
+        dotMarginTop() {
+            if (this.transitioning) {
+                return Math.max(Math.sin(this.dotGrowth*Math.PI*2),0)*1
+            }
+        },
+        reset() {
+            this.score = 0;
+            this.answered = false;
+            this.chosen = "";
+            this.questions = [...q_list];
+            this.answered_questions = [];
+            this.question_n = Math.floor(Math.random()*this.questions.length);
         }
     }
 }
 </script>
 
 <style scoped>
+.container {
+  flex: auto;
+  background-color: white;
+  align-items: center;
+  justify-content: center;
+}
+.button-answer {
+    width: 100%;
+}
+
+.answer-text {
+    text-align: center;
+    align-self: center;
+}
+
+.score-text {
+    flex: 1;
+    margin-right: 5;
+    margin-top: 20;
+    margin-bottom: 5;
+    text-align: right;
+}
+.question-text {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+.italic {
+    font-style: italic;
+}
+.light-text {
+    color: #aaa;
+}
+.border {
+    border-width: 2px;
+    border-color: #333;
+}
+.progress-container {
+    display: flex;
+    flex: 1;
+    flex-direction: row; 
+    justify-content: center;
+    align-items: center; 
+    height: 40px;
+}
+.progress-dots {
+    vertical-align: center;
+    border-width: 2px;
+    width: 20; 
+    height: 45;
+    self-align: center;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border-color: #2f2;
+}
+.centered-text {
+    text-align: right;
+    margin-left: auto;
+    margin-right: auto;
+    /* align-self: center; */
+}
+.regular-ass-button {
+    width: 0;
+}
+
+.title-flex {
+    display: flex;
+    height: 80px;
+    
+}
+
+
 
 
 </style>
