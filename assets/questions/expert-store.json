@@ -1,0 +1,82 @@
+[
+    {
+        "type": "similar",
+        "word": " expert",
+        "answers": {
+            "correct": "Cleamy",
+            "incorrect": "Selted Egg Chips"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "expert",
+        "answers": {
+            "correct": "Toe skin",
+            "incorrect": "Rum raisin"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "expert",
+        "answers": {
+            "correct": "bob",
+            "incorrect": "ice"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "expert",
+        "answers": {
+            "correct": "bye",
+            "incorrect": "hello"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "expert",
+        "answers": {
+            "correct": "meow",
+            "incorrect": "woof"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "expert",
+        "answers": {
+            "correct": "Decelerate",
+            "incorrect": "Illustrate"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "expert",
+        "answers": {
+            "correct": "Abate",
+            "incorrect": "Accelerate"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "expert",
+        "answers": {
+            "correct": "Faction",
+            "incorrect": "Fruition"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "expert",
+        "answers": {
+            "correct": "Indisputable",
+            "incorrect": "Inseparable"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "expert",
+        "answers": {
+            "correct": "Cautious",
+            "incorrect": "Capacious"
+        }
+    }
+]

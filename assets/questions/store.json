@@ -1,0 +1,82 @@
+[
+    {
+        "type": "similar",
+        "word": "Honey Buns",
+        "answers": {
+            "correct": "Cleamy",
+            "incorrect": "Selted Egg Chips"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "tasties",
+        "answers": {
+            "correct": "Toe skin",
+            "incorrect": "Rum raisin"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "paste",
+        "answers": {
+            "correct": "bob",
+            "incorrect": "ice"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "hi",
+        "answers": {
+            "correct": "bye",
+            "incorrect": "hello"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "meow",
+        "answers": {
+            "correct": "meow",
+            "incorrect": "woof"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "slow",
+        "answers": {
+            "correct": "Decelerate",
+            "incorrect": "Illustrate"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "intensify",
+        "answers": {
+            "correct": "Abate",
+            "incorrect": "Accelerate"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "junta",
+        "answers": {
+            "correct": "Faction",
+            "incorrect": "Fruition"
+        }
+    },
+    {
+        "type": "similar",
+        "word": "undeniable",
+        "answers": {
+            "correct": "Indisputable",
+            "incorrect": "Inseparable"
+        }
+    },
+    {
+        "type": "opposite",
+        "word": "impetuous",
+        "answers": {
+            "correct": "Cautious",
+            "incorrect": "Capacious"
+        }
+    }
+]
