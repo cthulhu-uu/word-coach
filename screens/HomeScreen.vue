@@ -1,14 +1,11 @@
 <template>
   <view class="container">
-    <button v-bind:title="message" v-bind:on-press="handleBtnPress"/>
-
-
-    <text class="text-color-primary">{{message}}</text>
-          <image
-          v-for="i in [1,2,3,4]"
-          :style="{width: 200 + i*20, height: 50 + i*10}"
-          :source="{uri: 'https://media3.giphy.com/media/yYo9Y9qUJFa1i/giphy.gif'}"
-        />
+    <view :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
+      <nb-text v-if="isLoaded" :style="{ fontFamily: 'agenda', fontSize: 28 }">
+        Hello, world!
+      </nb-text>
+    </view>
+    <text class="title">🎉WORD Coach🎉{{isLoaded}}</text>
     <view class="button">
       <button class="button"
       :on-press="onPressStartGame"
@@ -16,17 +13,29 @@
       color="#841584"
       accessibility-label="Start gaem or go home"
     /></view>
+    <nb-view padder>
     <view>
       <nb-button
+      :on-press="onPressStartExpert"
+      title="hii"
+      color="#000"
+      ><nb-text>expert mode 😚</nb-text></nb-button>
+    </view>
+    </nb-view>
+    <nb-view padder>
+    <view padder>
+      <nb-button bordered
       :on-press="handleBtnPress"
       title="hii"
       color="#000"
-      ><nb-text>hi! 😚</nb-text></nb-button>
+      ><nb-text>CHamoru?! 🇬🇺</nb-text></nb-button>
     </view>
+    </nb-view>
   </view>
 </template>
 
 <script>
+
 export default {
   name: "HomeScreen",
   props: {
@@ -37,21 +46,38 @@ export default {
   data: function() {
     return {
       message: "🎉WORD Coach🎉",
-      text: ''
-    };
+    }
+  },
+  async mounted() {
+    await Font.loadAsync({
+    'agenda': require('../assets/fonts/agenda.ttf'),
+    });
+
+    this.isLoaded = true;
+    console.log("Loaded from HomeScreen");
+
+    this.props.fontLoader();
+
   },
   methods: {
     onPressStartGame: function() {
-        this.navigation.navigate("Game");
+      this.navigation.navigate("Game", {expert: false});
+    },
+    onPressStartExpert: function() {
+      this.navigation.navigate("Expert", {expert: true});
     },
     handleBtnPress: function() {
-      alert(this.text + ' honey buns');
+      alert('hi honey buns');
     }
   }
 };
 </script>
 
 <style scoped>
+.title {
+  font-family: agenda-thin;
+  font-size: 56 ;
+}
 .container {
   flex: 1;
   background-color: white;
