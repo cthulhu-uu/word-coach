@@ -1,12 +1,19 @@
 <template>
     <nb-container>
         <nb-content padder>
-            <nb-text class="score-text"> Score: 
-                    <nb-text
+            <view block class="score-text-box">
+                <nb-text
                     :style="{
-                     fontSize: 18 + -Math.cos(scoreBounce*Math.PI*2)*4
+                        marginTop: 14
+                    }"    
+                > Score  •
+                </nb-text>
+                <nb-text
+                    :style="{
+                        color: success_color,
+                        marginTop: 10 + Math.cos(scoreBounce*Math.PI*2)*4
                     }">{{score}}</nb-text>
-            </nb-text>
+            </view>
                 
             <nb-card>
                 <nb-card-item class="title-flex">
@@ -95,7 +102,9 @@ export default {
         transitioning: false,
         dotGrowth: 0,
         scoreBounce: 0,
-        scoreBounceTransitioning: false
+        scoreBounceTransitioning: false,
+        success_color: variables.brandSuccess,
+        fail_color: variables.brandDanger,
     },
     computed: {
         question() {
@@ -126,9 +135,9 @@ export default {
         dot_color(i) {
             if (i == this.answered_questions.length+1 && this.answered) {
                 if (this.is_correct(this.chosen)) {
-                    return variables.brandSuccess;
+                    return this.success_color;
                 } else {
-                    return variables.brandDanger;
+                    return this.fail_color;
                 }
             }
             return '#aaa';
@@ -163,15 +172,15 @@ export default {
         submit(choice) {
             if (!this.answered) {
                 this.chosen = choice;
+                let transitionTime = 1300;
                 if (this.is_correct(choice)) {
                     this.score += 100;
+                    this.animate('scoreBounce', transitionTime/5)
                 } else if(this.is_expert_mode) {
                     this.score = 0;
                 }
                 this.answered = true;
 
-                let transitionTime = 1300;
-                this.animate('scoreBounce', transitionTime/5)
                 setTimeout(() => {
                     this.transitioning = true;
                     this.animate('dotGrowth', transitionTime/6)
@@ -246,12 +255,15 @@ export default {
     align-self: center;
 }
 
-.score-text {
+.score-text-box {
     flex: 1;
+    flex-direction: row;
     margin-right: 5;
     margin-top: 20;
     margin-bottom: 5;
     text-align: right;
+    color: #aaa;
+    justify-content: flex-end;
 }
 .question-text {
     font-size: 20px;
