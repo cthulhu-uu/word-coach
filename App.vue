@@ -11,7 +11,6 @@
 
 <script>
 import { AppLoading } from "expo";
-import { Font } from 'expo';
 import Vue from "vue-native-core";
 import StyleWrapper from './components/styleWrapper';
 import { VueNativeBase, Root } from "native-base";
@@ -51,15 +50,14 @@ export default {
       isLoaded: false
     }
   },
-  mounted: function() {
-    this.loadFonts();
+  mounted: async function() {
+    await this.loadFonts();
   },
   methods: {
     loadFonts: async function() {
       try {
-        await Font.loadAsync({
-          'agenda': require('./assets/fonts/agenda.ttf'),
-          Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
+        await Expo.Font.loadAsync({
+          'agenda': require('./assets/fonts/agenda.ttf')
         });
       } catch(error) {
         console.log('some error occurred loading fonts')
