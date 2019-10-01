@@ -27,7 +27,23 @@
                         :danger="is_chosen(random_choices[0]) && !is_correct(random_choices[0])" 
                         class="button-answer" 
                         @press="submit(random_choices[0])">
-                        <nb-text>{{ random_choices[0] }}</nb-text> 
+                        <view :style="{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }">
+                            <nb-text><nb-icon class="button-icon" v-if="is_chosen(random_choices[0])" 
+                                :name="is_correct(random_choices[0]) ? 'check' : 'times' " type="FontAwesome" 
+                            :style="{
+                                fontSize: 9 + animBtnIcon*9,
+                                opacity: Math.max(0, animBtnIcon*3-2),
+                                color: 'white',
+                            }"></nb-icon><nb-text v-if="is_chosen(random_choices[0])" :style="{
+                                fontSize: 1+animBtnIcon*11,
+                            }">{{ "    " }}</nb-text>
+                            {{ random_choices[0] }}<nb-text v-if="is_chosen(random_choices[0])" :style="{
+                                fontSize: 1+animBtnIcon*11,
+                            }">{{ "   " }}</nb-text></nb-text> 
+                        </view>
                     </nb-button>
                 </nb-card-item>
                 <!-- <nb-card-item block> -->
@@ -41,7 +57,23 @@
                         :danger="is_chosen(random_choices[1]) && !is_correct(random_choices[1])" 
                         class="button-answer" 
                         @press="submit(random_choices[1])">
-                        <nb-text>{{ random_choices[1] }}</nb-text> 
+                        <view :style="{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                        }">
+                            <nb-text><nb-icon class="button-icon" v-if="is_chosen(random_choices[1])" 
+                                :name="is_correct(random_choices[1]) ? 'check' : 'times' " type="FontAwesome" 
+                            :style="{
+                                fontSize: 9 + animBtnIcon*9,
+                                opacity: Math.max(0, animBtnIcon*3-2),
+                                color: 'white',
+                            }"></nb-icon><nb-text v-if="is_chosen(random_choices[1])" :style="{
+                                fontSize: 1+animBtnIcon*11,
+                            }">{{ "    " }}</nb-text>
+                            {{ random_choices[1] }}<nb-text v-if="is_chosen(random_choices[1])" :style="{
+                                fontSize: 1+animBtnIcon*11,
+                            }">{{ "   " }}</nb-text></nb-text> 
+                        </view>
                     </nb-button>
                 </nb-card-item>
                 <nb-card-item class="progress-container"
@@ -103,6 +135,8 @@ export default {
         dotGrowth: 0,
         scoreBounce: 0,
         scoreBounceTransitioning: false,
+        animBtnIcon: 0,
+        animBtnIconTransitioning: false,
         success_color: variables.brandSuccess,
         fail_color: variables.brandDanger,
     },
@@ -181,6 +215,7 @@ export default {
                 }
                 this.answered = true;
 
+                this.animate('animBtnIcon', transitionTime/6)
                 setTimeout(() => {
                     this.transitioning = true;
                     this.animate('dotGrowth', transitionTime/6)
