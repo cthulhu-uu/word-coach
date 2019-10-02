@@ -1,40 +1,38 @@
 <template>
   <view class="container">
-    <view :style="{ flex: 1, justifyContent: 'center', alignItems: 'center' }">
-      <nb-text v-if="isLoaded" :style="{ fontFamily: 'agenda', fontSize: 28 }">
-        Hello, world!
-      </nb-text>
-    </view>
-    <text class="title">🎉WORD Coach🎉{{isLoaded}}</text>
-    <view class="button">
-      <button class="button"
+    <text :class="screenWidth < 375 ? 'smaller-title' : 'title'"
+      >W O R D   C O A C H</text>
+    <view>
+      <nb-button bordered
       :on-press="onPressStartGame"
       title="Start gaem"
       color="#841584"
       accessibility-label="Start gaem or go home"
-    /></view>
+      ><nb-text>s t a r t</nb-text></nb-button>
+    </view>
     <nb-view padder>
     <view>
       <nb-button
       :on-press="onPressStartExpert"
       title="hii"
       color="#000"
-      ><nb-text>expert mode 😚</nb-text></nb-button>
+      ><nb-text>e x p e r t</nb-text></nb-button>
     </view>
     </nb-view>
     <nb-view padder>
-    <view padder>
+    <!-- <view padder>
       <nb-button bordered
       :on-press="handleBtnPress"
       title="hii"
       color="#000"
       ><nb-text>CHamoru?! 🇬🇺</nb-text></nb-button>
-    </view>
+    </view> -->
     </nb-view>
   </view>
 </template>
 
 <script>
+import { Dimensions } from "react-native";
 
 export default {
   name: "HomeScreen",
@@ -43,22 +41,13 @@ export default {
       type: Object
     }
   },
+
   data: function() {
     return {
-      message: "🎉WORD Coach🎉",
+      screenWidth: Dimensions.get("window").width,
     }
   },
-  async mounted() {
-    await Font.loadAsync({
-    'agenda': require('../assets/fonts/agenda.ttf'),
-    });
 
-    this.isLoaded = true;
-    console.log("Loaded from HomeScreen");
-
-    this.props.fontLoader();
-
-  },
   methods: {
     onPressStartGame: function() {
       this.navigation.navigate("Game", {expert: false});
@@ -67,7 +56,7 @@ export default {
       this.navigation.navigate("Expert", {expert: true});
     },
     handleBtnPress: function() {
-      alert('hi honey buns');
+      alert('C O M I N G  S O O N');
     }
   }
 };
@@ -75,8 +64,15 @@ export default {
 
 <style scoped>
 .title {
-  font-family: agenda-thin;
-  font-size: 56 ;
+  font-family: agenda;
+  font-size: 42;
+  margin-bottom: 128;
+}
+.smaller-title {
+  font-family: agenda;
+  font-size: 36;
+  margin-bottom: 128;
+
 }
 .container {
   flex: 1;
