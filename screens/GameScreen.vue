@@ -8,18 +8,18 @@
                             marginTop: 14
                         }" v-if="is_expert_mode">Time: {{time}}</nb-text>
                 <view :style="{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', width: '20%'}">
-                <nb-text
-                    :style="{
-                        marginTop: 14
-                    }"    
-                > Score  •
-                </nb-text>
-                <nb-text
-                    :style="{
-                        color: success_color,
-                        marginTop: 10 + Math.cos(scoreBounce*Math.PI*2)*4
-                    }">{{score}}</nb-text>
-            </view>
+                    <nb-text
+                        :style="{
+                            marginTop: 14
+                        }"
+                    > Score  •
+                    </nb-text>
+                    <nb-text
+                        :style="{
+                            color: success_color,
+                            marginTop: 10 + Math.cos(scoreBounce*Math.PI*2)*4
+                        }">{{score}}</nb-text>
+                </view>
             </view>
                 
             <nb-card>
