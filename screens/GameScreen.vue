@@ -1,7 +1,13 @@
 <template>
     <nb-container>
         <nb-content padder>
-            <view block class="score-text-box">
+            <view block 
+                :class="['score-text-box', is_expert_mode? 'space-between' : 'justify-right']"
+            >
+                <nb-text :style="{
+                            marginTop: 14
+                        }" v-if="is_expert_mode">Time: {{time}}</nb-text>
+                <view :style="{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', width: '20%'}">
                 <nb-text
                     :style="{
                         marginTop: 14
@@ -13,6 +19,7 @@
                         color: success_color,
                         marginTop: 10 + Math.cos(scoreBounce*Math.PI*2)*4
                     }">{{score}}</nb-text>
+            </view>
             </view>
                 
             <nb-card>
@@ -139,6 +146,8 @@ export default {
         animBtnIconTransitioning: false,
         success_color: variables.brandSuccess,
         fail_color: variables.brandDanger,
+        time: 0,
+        timerid: []
     },
     computed: {
         question() {
@@ -156,10 +165,36 @@ export default {
     created() {
         if (this.is_expert_mode) {
             q_list = e_list;
+            this.simple_timer();
             this.reset()
         }
     },
     methods: {
+        stoptimer() {
+            for (i = this.timerid.length-1; i >= 0; i--) {
+                clearTimeout(this.timerid[i])
+            }
+        },
+        lose() {
+            this.stoptimer();
+            alert("y o u l o s e");
+        },
+        run_timer() {
+            this.time--;
+            if(this.time==0) {
+                this.lose();
+            }
+        },
+        simple_timer() {
+            this.time = 3;
+            this.timerid = []
+            for (i=3; i>0; i--) {
+                this.timerid.push(setTimeout(this.run_timer, i*1000));
+            }
+        },
+        countdown() {
+            setTimeout(this.time, 3000);
+        },
         is_chosen(choice) {
             return this.chosen == choice
         },
@@ -207,11 +242,13 @@ export default {
             if (!this.answered) {
                 this.chosen = choice;
                 let transitionTime = 1300;
+                this.stoptimer();
                 if (this.is_correct(choice)) {
                     this.score += 100;
                     this.animate('scoreBounce', transitionTime/5)
                 } else if(this.is_expert_mode) {
                     this.score = 0;
+                    this.lose();  
                 }
                 this.answered = true;
 
@@ -298,6 +335,11 @@ export default {
     margin-bottom: 5;
     text-align: right;
     color: #aaa;
+}
+.space-between {
+    justify-content: space-between;
+}
+.justify-right {
     justify-content: flex-end;
 }
 .question-text {
@@ -329,7 +371,6 @@ export default {
     border-width: 2px;
     width: 20; 
     height: 45;
-    self-align: center;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -349,6 +390,17 @@ export default {
     display: flex;
     height: 80px;
     
+}
+.timer-text-box{
+    flex: 1;
+    flex-direction: row;
+    margin-left: 5;
+    margin-top: 20;
+    margin-bottom: 5;
+    text-align: left;
+    color: #aaa;
+    justify-content: flex-start;
+
 }
 
 
