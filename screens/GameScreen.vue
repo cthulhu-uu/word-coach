@@ -185,7 +185,6 @@ export default {
     created() {
         if (this.is_expert_mode) {
             q_list = e_list;
-            this.simple_timer();
             this.reset()
         }
     },
@@ -255,6 +254,8 @@ export default {
             // choose a new question
             this.question_n = Math.floor(Math.random()*this.questions.length);
             
+            this.simple_timer()
+
             // success
             return true;
         },
@@ -326,6 +327,11 @@ export default {
             this.questions = [...q_list];
             this.answered_questions = [];
             this.question_n = Math.floor(Math.random()*this.questions.length);
+            this.lost = false;
+            if (this.is_expert_mode) {
+                this.stoptimer()
+                this.simple_timer()
+            }
         }
     }
 }
