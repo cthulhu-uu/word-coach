@@ -4,9 +4,16 @@
             <view block 
                 :class="['score-text-box', is_expert_mode? 'space-between' : 'justify-right']"
             >
+                <view v-if="is_expert_mode" :style="{flex: 1, flexDirection: 'row', justifyContent: 'flex-start', width: '20%'}">
                 <nb-text :style="{
                             marginTop: 14
-                        }" v-if="is_expert_mode">Time: {{time}}</nb-text>
+                            }">Time: </nb-text>
+                    <nb-text :style="{
+                                marginTop: 14,
+                                color: timer_color,
+                            }"
+                    >{{timer_blocks}}</nb-text>
+                </view>
                 <view :style="{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', width: '20%'}">
                     <nb-text
                         :style="{
@@ -164,7 +171,14 @@ export default {
         success_color: variables.brandSuccess,
         fail_color: variables.brandDanger,
         time: 0,
-        timerid: []
+        timerid: [],
+        lost: false,
+        timer_colors: [
+            "#cc1111",
+            "#ee9922",
+            "#dddd11",
+            "#22dd22",
+        ],
     },
     computed: {
         question() {
@@ -177,12 +191,17 @@ export default {
         },
         is_expert_mode() {
             return this.navigation.getParam('expert');
+        },
+        timer_color() {
+            return this.timer_colors[this.time]
+        },
+        timer_blocks() {
+            return this.time==0? "│" : "█".repeat(this.time)
         }
     },
     created() {
         if (this.is_expert_mode) {
             q_list = e_list;
-            this.simple_timer();
             this.reset()
         }
     },
@@ -253,6 +272,8 @@ export default {
             // choose a new question
             this.question_n = Math.floor(Math.random()*this.questions.length);
             
+            this.simple_timer()
+
             // success
             return true;
         },
@@ -331,6 +352,11 @@ export default {
             this.questions = [...q_list];
             this.answered_questions = [];
             this.question_n = Math.floor(Math.random()*this.questions.length);
+            this.lost = false;
+            if (this.is_expert_mode) {
+                this.stoptimer()
+                this.simple_timer()
+            }
         }
     }
 }
@@ -338,7 +364,6 @@ export default {
 
 <style scoped>
 .container {
-  flex: auto;
   background-color: white;
   align-items: center;
   justify-content: center;
@@ -392,7 +417,6 @@ export default {
     height: 40px;
 }
 .progress-dots {
-    vertical-align: center;
     border-width: 2px;
     width: 20; 
     height: 45;
