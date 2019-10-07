@@ -165,7 +165,6 @@ export default {
     created() {
         if (this.is_expert_mode) {
             q_list = e_list;
-            this.simple_timer();
             this.reset()
         }
     },
