@@ -22,7 +22,24 @@
                 </view>
             </view>
                 
-            <nb-card>
+            <nb-card v-if="is_expert_mode && lost">
+                <nb-card-item class="title-flex">
+                    <nb-text class="question-text">Y O U   L O S E</nb-text>
+                </nb-card-item>
+                <nb-card-item
+                    :style="{marginBottom: 4.5}"
+                >
+                    <nb-button
+                        bordered
+                        block
+                        class="button-answer"
+                        @press="reset()"
+                    >
+                        <nb-text>Retry</nb-text>
+                    </nb-button>
+                </nb-card-item>
+            </nb-card>
+            <nb-card v-else>
                 <nb-card-item class="title-flex">
                     <nb-text class="question-text">Which word is <nb-text class="question-text italic">{{question.type}}</nb-text> to {{question.word}}?</nb-text>
                 </nb-card-item>
@@ -177,7 +194,8 @@ export default {
         },
         lose() {
             this.stoptimer();
-            alert("y o u l o s e");
+            // alert("y o u l o s e");
+            this.lost = true;
         },
         run_timer() {
             this.time--;
@@ -243,22 +261,29 @@ export default {
                 this.chosen = choice;
                 let transitionTime = 1300;
                 this.stoptimer();
+                let just_lost = false;
                 if (this.is_correct(choice)) {
                     this.score += 100;
                     this.animate('scoreBounce', transitionTime/5)
                 } else if(this.is_expert_mode) {
-                    this.score = 0;
-                    this.lose();  
+                    //this.score = 0;
+                    just_lost = true;
                 }
                 this.answered = true;
 
+                if (!just_lost){
                 this.animate('animBtnIcon', transitionTime/6)
                 setTimeout(() => {
                     this.transitioning = true;
                     this.animate('dotGrowth', transitionTime/6)
                 }, transitionTime * 5/6);
+                }
                 setTimeout(() => {
+                    if (just_lost) {
+                        this.lose()
+                    } else {
                     this.next_question();
+                    }
                 }, transitionTime);
             }
         },
