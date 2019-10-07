@@ -333,7 +333,6 @@ export default {
 
 <style scoped>
 .container {
-  flex: auto;
   background-color: white;
   align-items: center;
   justify-content: center;
@@ -387,7 +386,6 @@ export default {
     height: 40px;
 }
 .progress-dots {
-    vertical-align: center;
     border-width: 2px;
     width: 20; 
     height: 45;
